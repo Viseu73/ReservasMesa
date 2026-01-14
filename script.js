@@ -72,4 +72,23 @@ async function carregarFuncionamento() {
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarFuncionamento();
 });
+document.getElementById("data").addEventListener("change", () => {
+  const data = document.getElementById("data").value;
+  if (!data) return;
+
+  const dia = new Date(data + "T00:00:00")
+    .toLocaleDateString("pt-PT", { weekday: "long" });
+
+  const diaCapitalizado =
+    dia.charAt(0).toUpperCase() + dia.slice(1);
+
+  if (!funcionamento[diaCapitalizado]?.aberto) {
+    alert("O restaurante encontra-se encerrado neste dia.");
+    document.getElementById("data").value = "";
+    return;
+  }
+
+  // data válida → podes carregar horas
+});
+
 
