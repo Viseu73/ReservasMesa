@@ -187,5 +187,21 @@ body.admin {
   margin: 120px auto;
   text-align: center;
 }
+body.tablet {
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  background: #222;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 12px;
+}
+
+.estado-chegou { border-left: 6px solid #2ecc71; }
+.estado-faltou { border-left: 6px solid #e74c3c; }
+
 
 
