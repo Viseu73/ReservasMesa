@@ -62,3 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+let funcionamento = {};
+
+async function carregarFuncionamento() {
+  const res = await fetch(SCRIPT_URL + "?action=getFuncionamento");
+  funcionamento = await res.json();
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await carregarFuncionamento();
+});
+
