@@ -6,8 +6,8 @@ let funcionamento = {};
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarFuncionamento();
 
-  document.getElementById("refeicao").addEventListener("change", atualizarHoras);
   document.getElementById("data").addEventListener("change", validarData);
+  document.getElementById("refeicao").addEventListener("change", atualizarHoras);
   document.getElementById("form").addEventListener("submit", enviarReserva);
 });
 
@@ -57,15 +57,24 @@ async function atualizarHoras() {
 
   horaSelect.innerHTML = "";
 
-  if (!data || !refeicao) return;
+  if (!data) return;
+
+  if (!refeicao) {
+    const opt = document.createElement("option");
+    opt.textContent = "Escolhe a refeição primeiro";
+    opt.disabled = true;
+    horaSelect.appendChild(opt);
+    return;
+  }
 
   try {
     const res = await fetch(
       `${SCRIPT_URL}?action=getHoras&data=${data}&refeicao=${refeicao}`
     );
+
     const horas = await res.json();
 
-    if (horas.length === 0) {
+    if (!Array.isArray(horas) || horas.length === 0) {
       const opt = document.createElement("option");
       opt.textContent = "Sem disponibilidade";
       opt.disabled = true;
