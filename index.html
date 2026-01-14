@@ -2,44 +2,37 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Painel de Administração</title>
+  <title>Reservar Mesa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
+<body class="cliente">
 
-<body class="admin">
+<header>
+  <img src="logo.png" alt="Restaurante">
+</header>
 
-<!-- LOGIN -->
-<div id="login" class="card login">
-  <h2>Área de Administração</h2>
-  <input
-    type="password"
-    id="password"
-    placeholder="Password"
-  >
-  <button onclick="loginAdmin()">Entrar</button>
-</div>
+<main class="card">
+  <h1>Reservar Mesa</h1>
 
-<!-- PAINEL -->
-<div id="painel" style="display:none">
+  <form id="form">
+    <input id="nome" placeholder="Nome" required>
+    <input id="telefone" placeholder="Telefone" required>
+    <input id="data" type="date" required>
 
-  <header class="admin-header">
-    <h1>Reservas</h1>
-    <button onclick="logout()">Sair</button>
-  </header>
+    <select id="refeicao">
+      <option value="almoco">Almoço</option>
+      <option value="jantar">Jantar</option>
+    </select>
 
-  <!-- LOTAÇÃO -->
-  <section id="lotacao"></section>
+    <select id="hora"></select>
 
-  <!-- RESERVAS -->
-  <section id="listaReservas"></section>
+    <input id="pessoas" type="number" min="1" placeholder="Nº de pessoas" required>
 
-</div>
+    <button type="submit">Confirmar Reserva</button>
+  </form>
+</main>
 
-<!-- JS -->
-<script src="admin.js"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
