@@ -25,18 +25,29 @@ function validarDia() {
   const data = dataInput.value;
   if (!data) return;
 
-  const dia = new Date(data + "T00:00:00")
-    .toLocaleDateString("pt-PT", { weekday: "long" });
+  const dias = [
+    "Domingo",
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado"
+  ];
 
-  const diaCap =
-    dia.charAt(0).toUpperCase() + dia.slice(1);
+  const d = new Date(data + "T00:00:00");
+  const dia = dias[d.getDay()];
 
-  if (!funcionamento[diaCap]?.aberto) {
+  if (!funcionamento[dia] || !funcionamento[dia].aberto) {
     alert("O restaurante encontra-se encerrado neste dia.");
     dataInput.value = "";
     limparHoras();
     return;
   }
+
+  carregarHoras();
+}
+
 
   carregarHoras();
 }
@@ -138,3 +149,4 @@ async function enviarReserva(e) {
     console.error(err);
   }
 }
+
