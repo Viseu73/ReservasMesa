@@ -6,81 +6,66 @@ let funcionamento = {};
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarFuncionamento();
 
-  document.getElementById("data").addEventListener("change", validarData);
-  document.getElementById("refeicao").addEventListener("change", atualizarHoras);
+  document.getElementById("data").addEventListener("change", validarDia);
+  document.getElementById("refeicao").addEventListener("change", carregarHoras);
   document.getElementById("form").addEventListener("submit", enviarReserva);
 });
 
-/* =========================
+/* ===============================
    FUNCIONAMENTO
-========================= */
+================================ */
+
 async function carregarFuncionamento() {
   const res = await fetch(SCRIPT_URL + "?action=getFuncionamento");
   funcionamento = await res.json();
 }
 
-/* =========================
-   DATA
-========================= */
-function diaSemana(data) {
-  const dias = [
-    "domingo",
-    "segunda",
-    "terca",
-    "quarta",
-    "quinta",
-    "sexta",
-    "sabado"
-  ];
-
-  return dias[new Date(data + "T00:00:00").getDay()];
-}
-
-
-function validarData() {
+function validarDia() {
   const dataInput = document.getElementById("data");
   const data = dataInput.value;
+  if (!data) return;
+
+  const dia = new Date(data + "T00:00:00")
+    .toLocaleDateString("pt-PT", { weekday: "long" });
+
+  const diaCap =
+    dia.charAt(0).toUpperCase() + dia.slice(1);
+
+  if (!funcionamento[diaCap]?.aberto) {
+    alert("O restaurante encontra-se encerrado neste dia.");
+    dataInput.value = "";
+    limparHoras();
+    return;
+  }
+
+  carregarHoras();
+}
+
+/* ===============================
+   HORAS DISPONÍVEIS
+================================ */
+
+async function carregarHoras() {
+  const data = document.getElementById("data").value;
+  const refeicao = document.getElementById("refeicao").value;
   const horaSelect = document.getElementById("hora");
 
   horaSelect.innerHTML = "";
 
-  if (!data) return;
-
-  const dia = diaSemana(data);
-
-  if (!funcionamento[dia]?.aberto) {
-
-    alert("O restaurante encontra-se encerrado neste dia.");
-    dataInput.value = "";
-    return;
-  }
-
-  atualizarHoras();
-}
-
-/* =========================
-   HORAS DISPONÍVEIS
-========================= */
-async function atualizarHoras() {
-  hora.innerHTML = "";
-
-  const dataEscolhida = document.getElementById("data").value;
-  const refeicaoEscolhida = refeicao.value;
-
-  if (!dataEscolhida || !refeicaoEscolhida) {
-    hora.innerHTML = `<option>Escolhe a data</option>`;
-    return;
-  }
+  if (!data || !refeicao) return;
 
   try {
     const res = await fetch(
-      `${SCRIPT_URL}?action=getHoras&data=${dataEscolhida}&refeicao=${refeicaoEscolhida}`
+      `${SCRIPT_URL}?action=getHoras&data=${data}&refeicao=${refeicao}`
     );
-
     const horas = await res.json();
 
     if (!horas.length) {
-      hora.innerHTML = `<option>Sem disponibilidade</option>`;
+      const opt = document.createElement("option");
+      opt.textContent = "Sem disponibilidade";
+      opt.disabled = true;
+      opt.selected = true;
+      horaSelect.appendChild(opt);
       return;
     }
 
@@ -88,17 +73,24 @@ async function atualizarHoras() {
       const o = document.createElement("option");
       o.value = h;
       o.textContent = h;
-      hora.appendChild(o);
+      horaSelect.appendChild(o);
     });
 
-  } catch (err) {
-    console.error(err);
-    hora.innerHTML = `<option>Erro ao carregar horários</option>`;
+  } catch (e) {
+    alert("Erro ao carregar horários");
+    console.error(e);
   }
 }
-/* =========================
+
+function limparHoras() {
+  const horaSelect = document.getElementById("hora");
+  horaSelect.innerHTML = "";
+}
+
+/* ===============================
    ENVIAR RESERVA
-========================= */
+================================ */
+
 async function enviarReserva(e) {
   e.preventDefault();
 
@@ -116,7 +108,6 @@ async function enviarReserva(e) {
     !reserva.nome ||
     !reserva.telefone ||
     !reserva.data ||
-    !reserva.refeicao ||
     !reserva.hora ||
     !reserva.pessoas
   ) {
@@ -133,16 +124,17 @@ async function enviarReserva(e) {
 
     const r = await res.json();
 
-    if (!r.ok) throw new Error("Falha");
+    if (r.erro) {
+      alert(r.erro);
+      return;
+    }
 
-    alert("Reserva confirmada!");
+    alert("Reserva confirmada com sucesso!");
     document.getElementById("form").reset();
-    document.getElementById("hora").innerHTML = "";
+    limparHoras();
 
   } catch (err) {
-    alert("Não foi possível concluir a reserva.");
+    alert("Erro ao enviar reserva");
     console.error(err);
   }
 }
-
-
