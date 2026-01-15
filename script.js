@@ -1,5 +1,5 @@
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxAQIi25t1ea_glXaF4HMVEkBTDdfao62jayjSWvFCav1K062Wp-oVoSfuwD_eu2zIk/exec";
+  "https://script.google.com/macros/s/AKfycbxpVkbtbh4Z5mQrnMniHrDHu-IE-9hs2Nc_FNjBkZ3dnLp9jDzOsWXI4VfDD8FwOcqMYA/exec";
 
 let funcionamento = {};
 
@@ -11,12 +11,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("form").addEventListener("submit", enviarReserva);
 });
 
-/* ===============================
+/* =========================
    FUNCIONAMENTO
-================================ */
-
+========================= */
 async function carregarFuncionamento() {
-  const res = await fetch(SCRIPT_URL + "?action=getFuncionamento");
+  const res = await fetch(`${SCRIPT_URL}?action=getFuncionamento`);
   funcionamento = await res.json();
 }
 
@@ -25,37 +24,22 @@ function validarDia() {
   const data = dataInput.value;
   if (!data) return;
 
-  const dias = [
-    "Domingo",
-    "Segunda",
-    "Terça",
-    "Quarta",
-    "Quinta",
-    "Sexta",
-    "Sábado"
-  ];
+  const dia = new Date(data + "T00:00:00")
+    .toLocaleDateString("pt-PT", { weekday: "long" })
+    .replace(/^./, l => l.toUpperCase());
 
-  const d = new Date(data + "T00:00:00");
-  const dia = dias[d.getDay()];
-
-  if (!funcionamento[dia] || !funcionamento[dia].aberto) {
+  if (!funcionamento[dia]?.aberto) {
     alert("O restaurante encontra-se encerrado neste dia.");
     dataInput.value = "";
     limparHoras();
-    return;
+  } else {
+    carregarHoras();
   }
-
-  carregarHoras();
 }
 
-
-  carregarHoras();
-}
-
-/* ===============================
-   HORAS DISPONÍVEIS
-================================ */
-
+/* =========================
+   HORAS
+========================= */
 async function carregarHoras() {
   const data = document.getElementById("data").value;
   const refeicao = document.getElementById("refeicao").value;
@@ -65,43 +49,35 @@ async function carregarHoras() {
 
   if (!data || !refeicao) return;
 
-  try {
-    const res = await fetch(
-      `${SCRIPT_URL}?action=getHoras&data=${data}&refeicao=${refeicao}`
-    );
-    const horas = await res.json();
+  const res = await fetch(
+    `${SCRIPT_URL}?action=getHoras&data=${data}&refeicao=${refeicao}`
+  );
+  const horas = await res.json();
 
-    if (!horas.length) {
-      const opt = document.createElement("option");
-      opt.textContent = "Sem disponibilidade";
-      opt.disabled = true;
-      opt.selected = true;
-      horaSelect.appendChild(opt);
-      return;
-    }
-
-    horas.forEach(h => {
-      const o = document.createElement("option");
-      o.value = h;
-      o.textContent = h;
-      horaSelect.appendChild(o);
-    });
-
-  } catch (e) {
-    alert("Erro ao carregar horários");
-    console.error(e);
+  if (!horas.length) {
+    const opt = document.createElement("option");
+    opt.textContent = "Sem disponibilidade";
+    opt.disabled = true;
+    opt.selected = true;
+    horaSelect.appendChild(opt);
+    return;
   }
+
+  horas.forEach(h => {
+    const o = document.createElement("option");
+    o.value = h;
+    o.textContent = h;
+    horaSelect.appendChild(o);
+  });
 }
 
 function limparHoras() {
-  const horaSelect = document.getElementById("hora");
-  horaSelect.innerHTML = "";
+  document.getElementById("hora").innerHTML = "";
 }
 
-/* ===============================
-   ENVIAR RESERVA
-================================ */
-
+/* =========================
+   SUBMISSÃO
+========================= */
 async function enviarReserva(e) {
   e.preventDefault();
 
@@ -115,38 +91,21 @@ async function enviarReserva(e) {
     origem: "cliente"
   };
 
-  if (
-    !reserva.nome ||
-    !reserva.telefone ||
-    !reserva.data ||
-    !reserva.hora ||
-    !reserva.pessoas
-  ) {
-    alert("Preenche todos os campos");
-    return;
-  }
-
   try {
-    const res = await fetch(SCRIPT_URL + "?action=novaReserva", {
+    const res = await fetch(`${SCRIPT_URL}?action=novaReserva`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(reserva)
     });
 
-    const r = await res.json();
+    const json = await res.json();
+    if (!json.ok) throw new Error();
 
-    if (r.erro) {
-      alert(r.erro);
-      return;
-    }
-
-    alert("Reserva confirmada com sucesso!");
+    alert("Reserva efetuada com sucesso!");
     document.getElementById("form").reset();
     limparHoras();
 
-  } catch (err) {
-    alert("Erro ao enviar reserva");
-    console.error(err);
+  } catch (e) {
+    alert("Erro ao efetuar reserva");
   }
 }
-
