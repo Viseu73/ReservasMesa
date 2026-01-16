@@ -24,6 +24,9 @@ async function carregarFuncionamento() {
 
 
 function validarDia() {
+  console.log("Dia escolhido:", dia);
+console.log("Funcionamento dia:", funcionamento[dia]);
+
   const dataInput = document.getElementById("data");
   const data = dataInput.value;
   if (!data) return;
@@ -111,6 +114,7 @@ async function enviarReserva(e) {
     alert("Erro ao efetuar reserva");
   }
 }
+
 
 
 
