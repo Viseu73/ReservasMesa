@@ -104,16 +104,6 @@ async function enviarReserva(e) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("formReserva");
-
-  if (!form) {
-    console.error("FORM NÃO ENCONTRADO");
-    return;
-  }
-
-  form.addEventListener("submit", enviarReserva);
-});
 
 
 
