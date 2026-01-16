@@ -22,23 +22,20 @@ async function carregarHoras() {
 
   horaSelect.innerHTML = "";
 
-  if (!data || !refeicao) return;
-
-  const optLoading = document.createElement("option");
-  optLoading.textContent = "A carregar horários...";
-  optLoading.disabled = true;
-  optLoading.selected = true;
-  horaSelect.appendChild(optLoading);
+  if (!data || !refeicao) {
+    return;
+  }
 
   try {
-    const res = await fetch(
-      `${SCRIPT_URL}?action=getHoras&data=${data}&refeicao=${refeicao}`
-    );
+    const url = `${SCRIPT_URL}?action=getHoras&data=${data}&refeicao=${refeicao}`;
+    console.log("GET HORAS:", url);
+
+    const res = await fetch(url);
     const horas = await res.json();
 
-    horaSelect.innerHTML = "";
+    console.log("HORAS RECEBIDAS:", horas);
 
-    if (!horas.length) {
+    if (!Array.isArray(horas) || horas.length === 0) {
       const opt = document.createElement("option");
       opt.textContent = "Sem disponibilidade";
       opt.disabled = true;
@@ -55,8 +52,8 @@ async function carregarHoras() {
     });
 
   } catch (e) {
+    console.error("Erro getHoras:", e);
     alert("Erro ao carregar horários");
-    console.error(e);
   }
 }
 
@@ -103,3 +100,4 @@ async function enviarReserva(e) {
     console.error(err);
   }
 }
+
