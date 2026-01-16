@@ -1,5 +1,5 @@
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwrf9S-0bp2M3xqc0hzKKA3aQDVnSl61j-TevWGnLjE2eNWhTFCOD3jc0kSBIibYgGRQg/exec";
+  "https://script.google.com/macros/s/AKfycby9CrKTCh6HPNaQ3E7Dceg0XI0r2Lsjk_0_C2_T7oQrmLlVLxTGUtYDqhaBiCg93PSUeg/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("form");
@@ -104,6 +104,7 @@ async function enviarReserva(e) {
     alert("Erro ao enviar reserva");
   }
 }
+
 
 
 
