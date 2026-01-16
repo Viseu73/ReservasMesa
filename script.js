@@ -89,9 +89,11 @@ async function enviarReserva(e) {
 
   try {
     const res = await fetch(url);
+    const json = await res.json();
 
-    const text = await res.text();
-    console.log("📨 Resposta servidor:", text);
+    if (!json.ok) {
+      throw new Error("Servidor respondeu erro");
+    }
 
     alert("Reserva confirmada 🍽️");
     document.getElementById("formReserva").reset();
@@ -112,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", enviarReserva);
 });
+
 
 
 
