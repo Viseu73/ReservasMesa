@@ -1,5 +1,5 @@
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyxYRqtPNDrBUcEkj_jaToUwnpq_1bssM5C_EDirDpa9pWp5sEVJMrd-jMfPuVQZcqXrQ/exec";
+  "https://script.google.com/macros/s/AKfycbxRiNUHkt6RIYnU0RVxFIjRX_ADvTgGOZht9D2MWRSr9pL0pa8lCY3RPsbAGO83yh1Kew/exec";
 
 /* =========================
    ELEMENTOS
@@ -126,3 +126,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   refeicaoSelect.addEventListener("change", carregarHoras);
   form.addEventListener("submit", enviarReserva);
 });
+
