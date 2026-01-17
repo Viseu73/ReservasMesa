@@ -1,5 +1,5 @@
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyfuMpJydFBWYcOGElvpiRxCWYvzn6Utzg4B0zBSDUgWSSyJ5wHCtiSCH9VCc8oODTtoQ/exec";
+  "https://script.google.com/macros/s/AKfycbzM7uaIS6Wt5vKT1_wFECp_LJpYrqa_LF6M9O83ntpD280tvSs5UyWZKGbJTZFGp3CCng/exec";
 
 /* =========================
    VARIÁVEIS
@@ -149,5 +149,6 @@ async function enviarReserva(e) {
     alert("Erro de ligação ao servidor");
   }
 }
+
 
 
