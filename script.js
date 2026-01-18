@@ -30,10 +30,16 @@ document.addEventListener("DOMContentLoaded", async () => {
    FUNCIONAMENTO
 ========================= */
 async function carregarFuncionamento() {
-  const res = await fetch(SCRIPT_URL + "?action=getFuncionamento");
-  funcionamento = await res.json();
-  console.log("📅 Funcionamento:", funcionamento);
+  const url = `${SCRIPT_URL}?action=getFuncionamento`;
+  console.log("📡 GET FUNCIONAMENTO:", url);
+
+  const res = await fetch(url);
+  const dados = await res.json();
+
+  console.log("📥 FUNCIONAMENTO:", dados);
+  funcionamento = dados;
 }
+
 
 /* =========================
    VALIDAR DIA
@@ -149,6 +155,7 @@ async function enviarReserva(e) {
     alert("Erro de ligação ao servidor");
   }
 }
+
 
 
 
